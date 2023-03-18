@@ -129,6 +129,26 @@ document.addEventListener('DOMContentLoaded', () => {
       const replayButton = document.querySelector('#replay-button');
       replayButton.style.display = 'block';
     }
+    function resetGame() {
+      grid.innerHTML = ''; // Clear the grid
+      cardsChosen = [];
+      cardsChosenId = [];
+      cardsWon = [];
+      resultDisplay.textContent = '0';
+      timerDisplay.textContent = '00:00.00';
+      clickCounterDisplay.textContent = 'Clicks: 0';
+      stopTimer();
+      timerStarted = false;
+      clickCounter = 0;
+      shuffle();
+      createBoard();
+    
+      // Hide the replay button
+      const replayButton = document.querySelector('#replay-button');
+      replayButton.style.display = 'none';
+    }
+    document.querySelector('#replay-button').addEventListener('click', resetGame);
+
     createBoard();
   });
   
