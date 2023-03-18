@@ -1,12 +1,12 @@
 {
 	"folders": [
 		{
-			"name": "img",
-			"path": "../../../SaaS app/PicaretteMemo/img"
-		},
-		{
 			"name": "picarette",
 			"path": "."
+		},
+		{
+			"name": "img",
+			"path": "../../../SaaS app/PicaretteMemo/img"
 		}
 	],
 	"settings": {}
