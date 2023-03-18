@@ -81,6 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (cardsWon.length === cards.length / 2) {
         resultDisplay.textContent = 'Congratulations! You found all the matches!';
         stopTimer(); // Stop the timer when all pairs are found
+        showReplayButton(); // Show the replay button when the game ends
       }
     }
   
@@ -123,7 +124,11 @@ document.addEventListener('DOMContentLoaded', () => {
         [cards[i], cards[j]] = [cards[j], cards[i]];
       }
     })();
-  
+    
+    function showReplayButton() {
+      const replayButton = document.querySelector('#replay-button');
+      replayButton.style.display = 'block';
+    }
     createBoard();
   });
   
