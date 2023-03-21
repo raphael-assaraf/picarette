@@ -48,3 +48,19 @@ h2 {
   font-weight: bold;
   color: #181823;
 }
+
+#replay-button {
+  font-family: 'Gaegu', cursive;
+  font-size: 24px;
+  background-color: white;
+  border: 2px solid black;
+  border-radius: 32px;
+  padding: 8px 12px;
+  margin-top: 24px; /* Add a margin to move the button a bit lower */
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#replay-button:hover {
+  background-color: #f2f2f2; /* Change the background color when hovering */
+}

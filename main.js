@@ -1,154 +1,168 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const cards = [
-      { name: 'card1', img: './img/card1.png' },
-      { name: 'card1', img: './img/card1.png' },
-      { name: 'card2', img: './img/card2.png' },
-      { name: 'card2', img: './img/card2.png' },
-      { name: 'card3', img: './img/card3.png' },
-      { name: 'card3', img: './img/card3.png' },
-      { name: 'card4', img: './img/card4.png' },
-      { name: 'card4', img: './img/card4.png' },
-      { name: 'card5', img: './img/card5.png' },
-      { name: 'card5', img: './img/card5.png' },
-      { name: 'card6', img: './img/card6.png' },
-      { name: 'card6', img: './img/card6.png' },
-      // Add more cards as needed
-    ];
+  const cards = [
+    { name: 'card1', img: './img/card1.png' },
+    { name: 'card1', img: './img/card1.png' },
+    { name: 'card2', img: './img/card2.png' },
+    { name: 'card2', img: './img/card2.png' },
+    { name: 'card3', img: './img/card3.png' },
+    { name: 'card3', img: './img/card3.png' },
+    { name: 'card4', img: './img/card4.png' },
+    { name: 'card4', img: './img/card4.png' },
+    { name: 'card5', img: './img/card5.png' },
+    { name: 'card5', img: './img/card5.png' },
+    { name: 'card6', img: './img/card6.png' },
+    { name: 'card6', img: './img/card6.png' },
+    // Add more cards as needed
+  ];
+
+  const grid = document.querySelector('.grid');
+  const resultDisplay = document.querySelector('#result');
+
+  let cardsChosen = [];
+  let cardsChosenId = [];
+  let cardsWon = [];
   
-    const grid = document.querySelector('.grid');
-    const resultDisplay = document.querySelector('#result');
+
+  function createBoard() {
+    for (let i = 0; i < cards.length; i++) {
+      let card = document.createElement('img');
+      card.setAttribute('src', './img/blank.png');
+      card.setAttribute('data-id', i);
+      card.addEventListener('click', flipCard);
+      grid.appendChild(card);
+    }
+  }
+
+  const timerDisplay = document.querySelector('#timer');
+  let timer;
+  function formatTime(time) {
+    let minutes = Math.floor(time / 6000);
+    let seconds = Math.floor((time % 6000) / 100);
+    let centiseconds = time % 100;
   
-    let cardsChosen = [];
-    let cardsChosenId = [];
-    let cardsWon = [];
-    
+    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}.${String(centiseconds).padStart(2, '0')}`;
+  }
+
+  function startTimer() {
+    let centiseconds = 0;
+    timer = setInterval(() => {
+      centiseconds++;
+      timerDisplay.textContent = formatTime(centiseconds);
+    }, 10);
+  }
   
-    function createBoard() {
-      for (let i = 0; i < cards.length; i++) {
-        let card = document.createElement('img');
-        card.setAttribute('src', './img/blank.png');
-        card.setAttribute('data-id', i);
-        card.addEventListener('click', flipCard);
-        grid.appendChild(card);
-      }
+
+  function stopTimer() {
+      clearInterval(timer);
     }
 
-    const timerDisplay = document.querySelector('#timer');
-    let timer;
-    function formatTime(time) {
-      let minutes = Math.floor(time / 6000);
-      let seconds = Math.floor((time % 6000) / 100);
-      let centiseconds = time % 100;
-    
-      return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}.${String(centiseconds).padStart(2, '0')}`;
-    }
-
-    function startTimer() {
-      let centiseconds = 0;
-      timer = setInterval(() => {
-        centiseconds++;
-        timerDisplay.textContent = formatTime(centiseconds);
-      }, 10);
-    }
-    
-
-    function stopTimer() {
-        clearInterval(timer);
-      }
-  
     function checkForMatch() {
       const cardsImg = document.querySelectorAll('img');
       const firstCardId = cardsChosenId[0];
       const secondCardId = cardsChosenId[1];
-  
+    
       if (cardsChosen[0] === cardsChosen[1]) {
-        cardsImg[firstCardId].setAttribute('src', './img/white.png');
-        cardsImg[secondCardId].setAttribute('src', './img/white.png');
+        cardsImg[firstCardId].style.opacity = '0.4';
+        cardsImg[secondCardId].style.opacity = '0.4';
+        cardsImg[firstCardId].removeEventListener('click', flipCard);
+        cardsImg[secondCardId].removeEventListener('click', flipCard);
         cardsWon.push(cardsChosen);
       } else {
         cardsImg[firstCardId].setAttribute('src', './img/blank.png');
         cardsImg[secondCardId].setAttribute('src', './img/blank.png');
       }
-  
+    
       cardsChosen = [];
       cardsChosenId = [];
-  
+    
       resultDisplay.textContent = cardsWon.length;
-  
-      if (cardsWon.length === cards.length / 2) {
-        resultDisplay.textContent = 'Congratulations! You found all the matches!';
-      }
+    
       if (cardsWon.length === cards.length / 2) {
         resultDisplay.textContent = 'Congratulations! You found all the matches!';
         stopTimer(); // Stop the timer when all pairs are found
         showReplayButton(); // Show the replay button when the game ends
+        animateEndGameTiles(); // Animates tiles with opacity
       }
     }
-  
-    let timerStarted = false;
-    const clickCounterDisplay = document.querySelector('#click-counter');
-    let clickCounter = 0;
-    function incrementClickCounter() {
-      clickCounter++;
-      clickCounterDisplay.textContent = `Clicks: ${clickCounter}`;
+    
+    function animateEndGameTiles() {
+      const cardsImg = document.querySelectorAll('img');
+      const delay = 200; // Delay between each animation step in milliseconds
+      let currentCardIndex = 0;
+    
+      const animateTile = () => {
+        if (currentCardIndex < cardsImg.length) {
+          cardsImg[currentCardIndex].style.opacity = '1';
+          currentCardIndex++;
+          setTimeout(animateTile, delay);
+        }
+      };
+    
+      animateTile();
     }
+    
+    
 
-    function flipCard() {
-      let cardId = this.getAttribute('data-id');
-      
-      // Check if the clicked card is already white (matched)
-      if (this.getAttribute('src') === './img/white.png') {
-        return; // Do nothing and exit the function
-      }
-    
-      if (!timerStarted) {
-        startTimer();
-        timerStarted = true;
-      }
-    
-      incrementClickCounter(); // Increment the click counter
-    
-      cardsChosen.push(cards[cardId].name);
-      cardsChosenId.push(cardId);
-      this.setAttribute('src', cards[cardId].img);
-    
-      if (cardsChosen.length === 2) {
-        setTimeout(checkForMatch, 500);
-      }
-    }
-    
-  
-    (function shuffle() {
-      for (let i = cards.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [cards[i], cards[j]] = [cards[j], cards[i]];
-      }
-    })();
-    
-    function showReplayButton() {
-      const replayButton = document.querySelector('#replay-button');
-      replayButton.style.display = 'block';
-    }
-    function resetGame() {
-      grid.innerHTML = ''; // Clear the grid
-      cardsChosen = [];
-      cardsChosenId = [];
-      cardsWon = [];
-      resultDisplay.textContent = '0';
-      timerDisplay.textContent = '00:00.00';
-      clickCounterDisplay.textContent = 'Clicks: 0';
-      stopTimer();
-      timerStarted = false;
-      clickCounter = 0;
-      shuffle();
-      createBoard();
-    
-      // Hide the replay button
-      const replayButton = document.querySelector('#replay-button');
-      replayButton.style.display = 'none';
-    }
-    document.querySelector('#replay-button').addEventListener('click', resetGame);
+  function flipAllTilesBack() {
+    const cardsImg = document.querySelectorAll('img');
+    setTimeout(() => {
+      cardsImg.forEach((card, index) => {
+        if (card.getAttribute('src') !== './img/white.png') {
+          card.setAttribute('src', cards[index].img);
+        }
+        card.removeEventListener('click', flipCard); // Make the card non-clickable
+      });
+    }, 1000); // Wait for 1 second before revealing all the cards
+  }
 
-    createBoard();
-  });
+  let timerStarted = false;
+  const clickCounterDisplay = document.querySelector('#click-counter');
+  let clickCounter = 0;
+  function incrementClickCounter() {
+    clickCounter++;
+    clickCounterDisplay.textContent = `Clicks: ${clickCounter}`;
+  }
+
+  function flipCard() {
+    let cardId = this.getAttribute('data-id');
+    
+    // Check if the clicked card is already white (matched)
+    if (this.getAttribute('src') === './img/white.png') {
+      return; // Do nothing and exit the function
+    }
   
+    if (!timerStarted) {
+      startTimer();
+      timerStarted = true;
+    }
+  
+    incrementClickCounter(); // Increment the click counter
+  
+    cardsChosen.push(cards[cardId].name);
+    cardsChosenId.push(cardId);
+    this.setAttribute('src', cards[cardId].img);
+  
+    if (cardsChosen.length === 2) {
+      setTimeout(checkForMatch, 500);
+    }
+  }
+  
+
+  (function shuffle() {
+    for (let i = cards.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [cards[i], cards[j]] = [cards[j], cards[i]];
+    }
+  })();
+  
+  function showReplayButton() {
+    const replayButton = document.querySelector('#replay-button');
+    replayButton.style.display = 'block';
+  }
+  function resetGame() {
+    location.reload();
+  }
+  document.querySelector('#replay-button').addEventListener('click', resetGame);
+
+  createBoard();
+});
