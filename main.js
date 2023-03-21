@@ -14,14 +14,14 @@ document.addEventListener('DOMContentLoaded', () => {
     { name: 'card6', img: './img/card6.png' },
     // Add more cards as needed
   ];
-
   const grid = document.querySelector('.grid');
   const resultDisplay = document.querySelector('#result');
 
   let cardsChosen = [];
   let cardsChosenId = [];
   let cardsWon = [];
-  
+  let gameStarted = false;
+
 
   function createBoard() {
     for (let i = 0; i < cards.length; i++) {
@@ -124,6 +124,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function flipCard() {
+    if (!gameStarted) return;
+
     let cardId = this.getAttribute('data-id');
     
     // Check if the clicked card is already white (matched)
@@ -132,8 +134,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   
     if (!timerStarted) {
-      startTimer();
-      timerStarted = true;
     }
   
     incrementClickCounter(); // Increment the click counter
@@ -146,6 +146,54 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(checkForMatch, 500);
     }
   }
+
+  function startGame() {
+    const playButton = document.querySelector('#play-button');
+    playButton.style.display = 'none'; // Hide the play button
+    countdownElement.style.display = 'block';
+    countdown();
+
+  
+    // Show all images for 3 seconds
+    const cardsImg = document.querySelectorAll('img');
+    cardsImg.forEach((card, index) => {
+      card.setAttribute('src', cards[index].img);
+    });
+  
+    // Flip the cards back and start the timer
+    setTimeout(() => {
+      cardsImg.forEach((card, index) => {
+        card.setAttribute('src', './img/blank.png');
+      });
+      startTimer();
+      gameStarted = true;
+    }, 4500);
+  }
+
+  function countdown() {
+    countdownElement.textContent = '3';
+    setTimeout(() => {
+      countdownElement.textContent = '2';
+    }, 1000);
+    setTimeout(() => {
+      countdownElement.textContent = '1';
+    }, 2000);
+    setTimeout(() => {
+      countdownElement.textContent = 'Go';
+    }, 3000);
+    setTimeout(() => {
+      countdownElement.style.display = 'none';
+      gameStarted = true;
+    }, 4000);
+  }
+  
+  
+  
+
+  const countdownElement = document.querySelector('#countdown');
+
+  document.querySelector('#play-button').addEventListener('click', startGame);
+
   
 
   (function shuffle() {
