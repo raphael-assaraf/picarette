@@ -22,6 +22,10 @@ document.addEventListener('DOMContentLoaded', () => {
   let cardsWon = [];
   let gameStarted = false;
 
+  // sound
+  let soundEnabled = true;
+
+
 
   function createBoard() {
     for (let i = 0; i < cards.length; i++) {
@@ -62,12 +66,16 @@ document.addEventListener('DOMContentLoaded', () => {
       const secondCardId = cardsChosenId[1];
     
       if (cardsChosen[0] === cardsChosen[1]) {
+        playSound('./sounds/win-arcade-score.wav'); // Play success sound
+    
         cardsImg[firstCardId].style.opacity = '0.4';
         cardsImg[secondCardId].style.opacity = '0.4';
         cardsImg[firstCardId].removeEventListener('click', flipCard);
         cardsImg[secondCardId].removeEventListener('click', flipCard);
         cardsWon.push(cardsChosen);
       } else {
+        playSound('./sounds/fail-ring.mp3'); // Play failure sound
+    
         cardsImg[firstCardId].setAttribute('src', './img/blank.png');
         cardsImg[secondCardId].setAttribute('src', './img/blank.png');
       }
@@ -82,11 +90,12 @@ document.addEventListener('DOMContentLoaded', () => {
         stopTimer(); // Stop the timer when all pairs are found
         showReplayButton(); // Show the replay button when the game ends
         animateEndGameTiles(); // Animates tiles with opacity
+        playSound('./sounds/applause_fireworks.mp3'); // Play the win sound
       }
     }
     
     function animateEndGameTiles() {
-      const cardsImg = document.querySelectorAll('img');
+      const cardsImg = grid.querySelectorAll('img');
       const delay = 200; // Delay between each animation step in milliseconds
       let currentCardIndex = 0;
     
@@ -103,17 +112,17 @@ document.addEventListener('DOMContentLoaded', () => {
     
     
 
-  function flipAllTilesBack() {
-    const cardsImg = document.querySelectorAll('img');
-    setTimeout(() => {
-      cardsImg.forEach((card, index) => {
-        if (card.getAttribute('src') !== './img/white.png') {
-          card.setAttribute('src', cards[index].img);
-        }
-        card.removeEventListener('click', flipCard); // Make the card non-clickable
-      });
-    }, 1000); // Wait for 1 second before revealing all the cards
-  }
+    function flipAllTilesBack() {
+      const cardsImg = grid.querySelectorAll('img');
+      setTimeout(() => {
+        cardsImg.forEach((card, index) => {
+          if (card.getAttribute('src') !== './img/white.png') {
+            card.setAttribute('src', cards[index].img);
+          }
+          card.removeEventListener('click', flipCard); // Make the card non-clickable
+        });
+      }, 1000); // Wait for 1 second before revealing all the cards
+    }
 
   let timerStarted = false;
   const clickCounterDisplay = document.querySelector('#click-counter');
@@ -132,6 +141,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (this.getAttribute('src') === './img/white.png') {
       return; // Do nothing and exit the function
     }
+  
+    playSound('./sounds/Cloud Click.wav'); // Play the sound effect
   
     if (!timerStarted) {
     }
@@ -155,7 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   
     // Show all images for 3 seconds
-    const cardsImg = document.querySelectorAll('img');
+    const cardsImg = grid.querySelectorAll('img');
     cardsImg.forEach((card, index) => {
       card.setAttribute('src', cards[index].img);
     });
@@ -187,8 +198,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 4000);
   }
   
-  
-  
 
   const countdownElement = document.querySelector('#countdown');
 
@@ -211,6 +220,30 @@ document.addEventListener('DOMContentLoaded', () => {
     location.reload();
   }
   document.querySelector('#replay-button').addEventListener('click', resetGame);
+
+
+  function playSound(soundFile) {
+    if (soundEnabled) {
+      const audio = new Audio(soundFile);
+      audio.play();
+    }
+  }
+  
+
+function toggleSound() {
+  soundEnabled = !soundEnabled;
+
+  // Update the icon based on the sound state
+  const soundIcon = document.querySelector("#sound-toggle img");
+  if (soundEnabled) {
+    soundIcon.src = "./assets/sound-on.svg";
+  } else {
+    soundIcon.src = "./assets/sound-off.svg"; // Assuming you have a sound-off.svg icon
+  }
+}
+document.querySelector("#sound-toggle").addEventListener("click", toggleSound);
+
+
 
   createBoard();
 });

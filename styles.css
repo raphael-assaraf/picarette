@@ -99,3 +99,37 @@ h2 {
   max-width: 100%;
   margin-bottom: 1em;
 }
+
+/* Container for aligning the elements */
+.align-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px; /* Add some margin at the bottom */
+}
+
+/* Reset the button style */
+#sound-toggle {
+  background: none; /* Remove the button background */
+  border: 2px solid black; /* Add a 2px black border */
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin: 6em;
+  outline: none;
+  width: 24px;
+  height: 24px;
+}
+
+/* Add some hover effect */
+#sound-toggle:hover {
+  opacity: 0.8;
+}
+
+/* Adjust the icon's appearance */
+#sound-toggle img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
